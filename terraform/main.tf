@@ -17,10 +17,13 @@ provider "aws" {
 
 data "aws_vpc" "default" {
   default = true
-}   
+}
 
-data "aws_subnet_ids" "default" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 data "aws_ami" "amazon_linux" {
@@ -98,7 +101,7 @@ resource "aws_instance" "web" {
   instance_type               = var.instance_type
   iam_instance_profile        = aws_iam_instance_profile.ec2.name
   vpc_security_group_ids      = [aws_security_group.web.id]
-  subnet_id                   = data.aws_subnet_ids.default.ids[0]
+  subnet_id                   = data.aws_subnets.default.ids[0]
   associate_public_ip_address = true
 
   user_data = <<-EOF
