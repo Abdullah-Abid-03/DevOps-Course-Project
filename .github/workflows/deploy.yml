@@ -1,4 +1,4 @@
-name: Build and Push to ECR
+name: Build and Deploy to EC2
 
 on:
   push:
@@ -13,6 +13,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: grocery-app
+  EC2_INSTANCE_TAG: grocery-app-web
 
 jobs:
   build-and-push:
@@ -57,3 +58,43 @@ jobs:
           IMAGE_TAG: latest
         run: |
           echo "::notice title=Docker Image Built::Image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  deploy-to-ec2:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Deploy image to EC2 via AWS SSM
+        run: |
+          IMAGE="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}:latest"
+          echo "Deploying image $IMAGE to EC2 instances tagged Name=$EC2_INSTANCE_TAG"
+          aws ssm send-command \
+            --document-name "AWS-RunShellScript" \
+            --targets "Key=tag:Name,Values=${EC2_INSTANCE_TAG}" \
+            --parameters commands='[
+              "set -e",
+              "aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}",
+              "docker pull '$IMAGE'",
+              "docker rm -f grocery-app || true",
+              "docker run -d --name grocery-app -p 80:3000 --restart unless-stopped '$IMAGE'"
+            ]' \
+            --comment "Deploy grocery-app Docker image to EC2 via SSM" \
+            --timeout-seconds 600 \
+            --output text
