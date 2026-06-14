@@ -262,5 +262,49 @@
     "description": "Premium aged basmati rice. Long-grain, aromatic, and fluffy when cooked.",
     "inStock": true,
     "badge": null
+  },
+  {
+    "id": "p025",
+    "name": "All-Purpose Flour",
+    "category": "Pantry",
+    "price": 3.49,
+    "unit": "bag",
+    "emoji": "🥣",
+    "description": "Versatile all-purpose flour for baking cakes, cookies, and breads.",
+    "inStock": true,
+    "badge": null
+  },
+  {
+    "id": "p026",
+    "name": "Granulated Sugar",
+    "category": "Pantry",
+    "price": 2.99,
+    "unit": "bag",
+    "emoji": "🍬",
+    "description": "Fine granulated sugar perfect for baking and sweetening beverages.",
+    "inStock": true,
+    "badge": null
+  },
+  {
+    "id": "p027",
+    "name": "Unsalted Butter",
+    "category": "Dairy & Eggs",
+    "price": 4.99,
+    "unit": "stick",
+    "emoji": "🧈",
+    "description": "Creamy unsalted butter for baking, cooking, and spreading.",
+    "inStock": true,
+    "badge": null
+  },
+  {
+    "id": "p028",
+    "name": "Vanilla Extract",
+    "category": "Pantry",
+    "price": 6.49,
+    "unit": "bottle",
+    "emoji": "🍨",
+    "description": "Pure vanilla extract for rich flavor in cakes, cookies, and desserts.",
+    "inStock": true,
+    "badge": null
   }
 ]

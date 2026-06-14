@@ -12,6 +12,48 @@
   let cartTotal = 0;
   let activeCategory = 'all';
   let searchQuery = '';
+  let selectedRecipe = null;
+
+  const recipes = [
+    {
+      id: 'r001',
+      name: 'Classic Cake',
+      emoji: '🍰',
+      description: 'A simple cake recipe with eggs, milk, flour, butter, and vanilla.',
+      ingredients: [
+        { productId: 'p007', name: 'Free-Range Eggs', qty: 1 },
+        { productId: 'p006', name: 'Whole Milk', qty: 1 },
+        { productId: 'p025', name: 'All-Purpose Flour', qty: 1 },
+        { productId: 'p026', name: 'Granulated Sugar', qty: 1 },
+        { productId: 'p027', name: 'Unsalted Butter', qty: 1 },
+        { productId: 'p028', name: 'Vanilla Extract', qty: 1 }
+      ]
+    },
+    {
+      id: 'r002',
+      name: 'Yogurt Honey Parfait',
+      emoji: '🍯',
+      description: 'A healthy parfait with Greek yogurt, honey, and fresh berries.',
+      ingredients: [
+        { productId: 'p008', name: 'Greek Yogurt', qty: 1 },
+        { productId: 'p022', name: 'Honey', qty: 1 },
+        { productId: 'p002', name: 'Fresh Strawberries', qty: 1 },
+        { productId: 'p012', name: 'Blueberry Muffins', qty: 1 }
+      ]
+    },
+    {
+      id: 'r003',
+      name: 'Spinach Salad',
+      emoji: '🥗',
+      description: 'A refreshing salad with spinach, avocado, bell pepper, and olive oil.',
+      ingredients: [
+        { productId: 'p004', name: 'Baby Spinach', qty: 1 },
+        { productId: 'p003', name: 'Avocados', qty: 1 },
+        { productId: 'p005', name: 'Red Bell Peppers', qty: 1 },
+        { productId: 'p023', name: 'Extra Virgin Olive Oil', qty: 1 }
+      ]
+    }
+  ];
 
   // ── DOM refs ──────────────────────────────
   const $ = id => document.getElementById(id);
@@ -21,17 +63,27 @@
   const productCount  = $('product-count');
   const emptyProducts = $('empty-products');
   const cartBadge     = $('cart-badge');
+  const deployDate    = $('deploy-date');
   const drawerOverlay = $('drawer-overlay');
   const cartDrawer    = $('cart-drawer');
   const drawerBody    = $('drawer-body');
   const drawerFooter  = $('drawer-footer');
   const searchInput   = $('search-input');
   const searchClear   = $('search-clear');
+  const recipesGrid   = $('recipes-grid');
+  const recipeDetails = $('recipe-details');
+  const recipeName    = $('recipe-name');
+  const recipeDesc    = $('recipe-desc');
+  const ingredientsList = $('ingredients-list');
+  const recipeDetailsClose = $('recipe-details-close');
+  const recipeAddAllBtn = $('recipe-add-all');
 
   // ── Init ──────────────────────────────────
   async function init() {
     await loadProducts();
     await refreshCart();
+    renderDeploymentBanner();
+    renderRecipes();
     bindEvents();
   }
 
@@ -68,6 +120,92 @@
     catScroll.innerHTML = UI.categoryPills(categories, activeCategory);
   }
 
+  function renderRecipes() {
+    if (!recipesGrid) return;
+    recipesGrid.innerHTML = recipes.map(recipe => `
+      <div class="recipe-card">
+        <div class="recipe-card-top">
+          <div class="recipe-emoji">${recipe.emoji}</div>
+          <div>
+            <h3>${recipe.name}</h3>
+            <p>${recipe.description}</p>
+          </div>
+        </div>
+        <div class="recipe-footer">
+          <button class="recipe-view-btn" data-view-recipe="${recipe.id}">View ingredients</button>
+          <button class="recipe-add-all-btn" data-add-recipe="${recipe.id}">Add all</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderRecipeDetails(recipe) {
+    if (!recipeDetails || !ingredientsList || !recipeName || !recipeDesc) return;
+    selectedRecipe = recipe;
+    recipeName.textContent = recipe.name;
+    recipeDesc.textContent = recipe.description;
+
+    const cartMap = cartItems.reduce((map, item) => {
+      map[item.productId] = item.quantity;
+      return map;
+    }, {});
+
+    ingredientsList.innerHTML = recipe.ingredients.map(ingredient => {
+      const inCart = cartMap[ingredient.productId] || 0;
+      return `
+        <li class="ingredient-row">
+          <div>
+            <span class="ingredient-name">${ingredient.name}</span>
+            <span class="ingredient-qty">x${ingredient.qty}</span>
+          </div>
+          <button class="ingredient-add-btn" data-add-ingredient="${ingredient.productId}">
+            ${inCart ? `Add again (${inCart} in cart)` : 'Add'}
+          </button>
+        </li>
+      `;
+    }).join('');
+
+    recipeDetails.classList.remove('hidden');
+  }
+
+  async function addRecipeIngredient(productId) {
+    try {
+      await API.addToCart(productId, 1);
+      const data = await API.getCart();
+      cartItems = data.items;
+      cartTotal = data.total;
+      cartCount = data.count;
+      updateCartBadge();
+      renderRecipeDetails(selectedRecipe);
+      UI.toast('Ingredient added to cart', 'success');
+    } catch (e) {
+      UI.toast('Failed to add ingredient', 'error');
+    }
+  }
+
+  async function addAllRecipeIngredients(recipe) {
+    try {
+      for (const ingredient of recipe.ingredients) {
+        await API.addToCart(ingredient.productId, ingredient.qty);
+      }
+      const data = await API.getCart();
+      cartItems = data.items;
+      cartTotal = data.total;
+      cartCount = data.count;
+      updateCartBadge();
+      renderRecipeDetails(recipe);
+      UI.toast('All recipe ingredients added to cart', 'success');
+    } catch (e) {
+      UI.toast('Failed to add recipe ingredients', 'error');
+    }
+  }
+
+  function closeRecipeDetails() {
+    if (recipeDetails) {
+      recipeDetails.classList.add('hidden');
+    }
+  }
+
   function renderProducts() {
     // Build a quick lookup of cart quantities
     const qtyMap = {};
@@ -89,6 +227,14 @@
 
     sectionTitle.textContent = activeCategory === 'all' ? 'All Products' : activeCategory;
     productCount.textContent = `${filtered.length} item${filtered.length !== 1 ? 's' : ''}`;
+  }
+
+  function renderDeploymentBanner() {
+    if (!deployDate) return;
+    const now = new Date();
+    deployDate.textContent = now.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit'
+    });
   }
 
   function renderCart() {
@@ -329,6 +475,46 @@
       loadProducts();
     });
 
+    // Recipe section actions
+    if (recipesGrid) {
+      recipesGrid.addEventListener('click', e => {
+        const viewBtn = e.target.closest('[data-view-recipe]');
+        if (viewBtn) {
+          const recipeId = viewBtn.dataset.viewRecipe;
+          const recipe = recipes.find(r => r.id === recipeId);
+          if (recipe) renderRecipeDetails(recipe);
+          return;
+        }
+
+        const addAllBtn = e.target.closest('[data-add-recipe]');
+        if (addAllBtn) {
+          const recipeId = addAllBtn.dataset.addRecipe;
+          const recipe = recipes.find(r => r.id === recipeId);
+          if (recipe) addAllRecipeIngredients(recipe);
+          return;
+        }
+      });
+    }
+
+    if (recipeDetailsClose) {
+      recipeDetailsClose.addEventListener('click', closeRecipeDetails);
+    }
+
+    if (recipeAddAllBtn) {
+      recipeAddAllBtn.addEventListener('click', () => {
+        if (selectedRecipe) addAllRecipeIngredients(selectedRecipe);
+      });
+    }
+
+    if (recipeDetails) {
+      recipeDetails.addEventListener('click', e => {
+        const ingredientBtn = e.target.closest('[data-add-ingredient]');
+        if (ingredientBtn) {
+          addRecipeIngredient(ingredientBtn.dataset.addIngredient);
+        }
+      });
+    }
+
     // Product grid actions (delegation)
     grid.addEventListener('click', e => {
       const addBtn = e.target.closest('[data-add]');
@@ -383,7 +569,7 @@
     // Keyboard
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
-        closeCart(); closeCheckout(); closeOrders();
+        closeCart(); closeCheckout(); closeOrders(); closeRecipeDetails();
       }
     });
   }

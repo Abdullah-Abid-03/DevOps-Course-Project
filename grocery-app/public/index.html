@@ -43,6 +43,10 @@
       <div class="hero-tag">🌿 Farm Fresh • Delivered Daily</div>
       <h1 class="hero-title">Fresh groceries,<br><span class="hero-gradient">delivered in minutes</span></h1>
       <p class="hero-sub">Premium produce, dairy, bakery & more — curated for quality, delivered to your doorstep.</p>
+      <div class="deploy-banner" id="deploy-banner">
+        <span class="deploy-tag">CI/CD TEST</span>
+        <span class="deploy-text">Live deployment confirmed on <strong id="deploy-date">...</strong></span>
+      </div>
       <button class="hero-cta" id="hero-cta">
         Start Shopping
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -56,6 +60,30 @@
       </div>
     </div>
   </header>
+
+  <!-- ═══════════════ QUICK RECIPES ═══════════════ -->
+  <section class="recipes-section" id="recipes-section">
+    <div class="section-header">
+      <h2 class="section-title">Quick Recipes</h2>
+      <p class="section-subtitle">Pick a ready-made recipe, review ingredients, then add all items directly to your cart.</p>
+    </div>
+    <div class="recipes-grid" id="recipes-grid"></div>
+    <div class="recipe-details hidden" id="recipe-details">
+      <div class="recipe-details-card">
+        <div class="recipe-details-header">
+          <div>
+            <h3 id="recipe-name"></h3>
+            <p id="recipe-desc"></p>
+          </div>
+          <button class="details-close" id="recipe-details-close" aria-label="Close recipe details">✕</button>
+        </div>
+        <ul class="ingredients-list" id="ingredients-list"></ul>
+        <div class="recipe-actions">
+          <button class="recipe-add-all-btn" id="recipe-add-all">Add all ingredients to cart</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
   <main class="main" id="main-content">
