@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FreshCart — Premium grocery shopping delivered to your doorstep. Browse fresh produce, dairy, bakery, and more.">
+  <title>FreshCart — Fresh Groceries Delivered</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <!-- ═══════════════ NAVBAR ═══════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="logo" id="logo-link">
+        <span class="logo-icon">🛒</span>
+        <span class="logo-text">Fresh<span class="logo-accent">Cart</span></span>
+      </a>
+      <div class="search-bar" id="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Search groceries..." autocomplete="off">
+        <button class="search-clear hidden" id="search-clear" aria-label="Clear search">✕</button>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn orders-btn" id="orders-btn" aria-label="My Orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/><path d="M9 14l2 2 4-4"/></svg>
+          <span class="btn-label">Orders</span>
+        </button>
+        <button class="nav-btn cart-btn" id="cart-btn" aria-label="Shopping Cart">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+          <span class="cart-badge hidden" id="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <header class="hero" id="hero-section">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-tag">🌿 Farm Fresh • Delivered Daily</div>
+      <h1 class="hero-title">Fresh groceries,<br><span class="hero-gradient">delivered in minutes</span></h1>
+      <p class="hero-sub">Premium produce, dairy, bakery & more — curated for quality, delivered to your doorstep.</p>
+      <button class="hero-cta" id="hero-cta">
+        Start Shopping
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">24+</span><span class="stat-label">Products</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">7</span><span class="stat-label">Categories</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">Free</span><span class="stat-label">Over $35</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main class="main" id="main-content">
+    <!-- ── Category Filters ── -->
+    <section class="categories-bar" id="categories-bar">
+      <div class="categories-scroll">
+        <button class="cat-pill active" data-category="all">All Items</button>
+        <!-- dynamically populated -->
+      </div>
+    </section>
+
+    <!-- ── Product Grid ── -->
+    <section class="products-section" id="products-section">
+      <div class="section-header">
+        <h2 class="section-title" id="section-title">All Products</h2>
+        <span class="product-count" id="product-count">24 items</span>
+      </div>
+      <div class="products-grid" id="products-grid">
+        <!-- dynamically populated -->
+      </div>
+      <div class="empty-state hidden" id="empty-products">
+        <span class="empty-emoji">🔍</span>
+        <p>No products found. Try a different search or category.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════ CART DRAWER ═══════════════ -->
+  <div class="drawer-overlay hidden" id="drawer-overlay"></div>
+  <aside class="cart-drawer hidden" id="cart-drawer">
+    <div class="drawer-header">
+      <h2>Your Cart</h2>
+      <button class="drawer-close" id="drawer-close" aria-label="Close cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body" id="drawer-body">
+      <!-- Cart items rendered here -->
+    </div>
+    <div class="drawer-footer hidden" id="drawer-footer">
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">$0.00</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <span id="cart-delivery">$4.99</span>
+        </div>
+        <div class="summary-row free-delivery-hint hidden" id="free-delivery-hint">
+          <span>🎉 Add $<span id="free-delivery-remaining">0</span> more for free delivery!</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row summary-total">
+          <span>Total</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+      </div>
+      <button class="checkout-btn" id="checkout-btn">
+        Proceed to Checkout
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════ CHECKOUT MODAL ═══════════════ -->
+  <div class="modal-overlay hidden" id="checkout-modal">
+    <div class="modal">
+      <!-- Checkout Form View -->
+      <div id="checkout-form-view">
+        <div class="modal-header">
+          <button class="modal-back" id="modal-back" aria-label="Back to cart">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          </button>
+          <h2>Checkout</h2>
+          <button class="modal-close" id="modal-close" aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="checkout-order-summary" id="checkout-order-summary">
+            <!-- order items summary -->
+          </div>
+          <form id="checkout-form" novalidate>
+            <h3 class="form-section-title">Delivery Details</h3>
+            <div class="form-group">
+              <label for="cust-name">Full Name</label>
+              <input type="text" id="cust-name" placeholder="John Doe" required minlength="2">
+              <span class="form-error" id="error-name"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-email">Email</label>
+              <input type="email" id="cust-email" placeholder="john@example.com" required>
+              <span class="form-error" id="error-email"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-phone">Phone</label>
+              <input type="tel" id="cust-phone" placeholder="+1 (555) 123-4567" required minlength="7">
+              <span class="form-error" id="error-phone"></span>
+            </div>
+            <div class="form-group">
+              <label for="cust-address">Delivery Address</label>
+              <textarea id="cust-address" placeholder="123 Main St, Apt 4B, City, State" required minlength="5" rows="3"></textarea>
+              <span class="form-error" id="error-address"></span>
+            </div>
+            <button type="submit" class="place-order-btn" id="place-order-btn">
+              <span class="btn-text">Place Order</span>
+              <span class="btn-loader hidden" id="order-loader">
+                <span class="spinner"></span>
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- Order Confirmation View -->
+      <div id="order-confirm-view" class="hidden">
+        <div class="confirm-content">
+          <div class="confirm-icon">✅</div>
+          <h2 class="confirm-title">Order Placed!</h2>
+          <p class="confirm-subtitle">Your groceries are on the way</p>
+          <div class="confirm-details" id="confirm-details">
+            <!-- filled dynamically -->
+          </div>
+          <button class="confirm-btn" id="continue-shopping-btn">Continue Shopping</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ORDERS MODAL ═══════════════ -->
+  <div class="modal-overlay hidden" id="orders-modal">
+    <div class="modal orders-modal">
+      <div class="modal-header">
+        <h2>My Orders</h2>
+        <button class="modal-close" id="orders-modal-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" id="orders-list">
+        <!-- filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ TOAST ═══════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══════════════ FOOTER ═══════════════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <span class="footer-logo">🛒 FreshCart</span>
+      <span class="footer-copy">© 2026 FreshCart. Built with ❤️ by AI Agent Team.</span>
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

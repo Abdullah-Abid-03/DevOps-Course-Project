@@ -1,0 +1,25 @@
+# Ignore Node modules
+node_modules/
+
+# Ignore Editor and OS files
+.DS_Store
+.vscode/
+
+# Ignore AWS credentials
+.aws/
+
+# Ignore Docker artifacts
+docker-compose.override.yml
+
+# Ignore Terraform state and secrets
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+terraform.tfvars.json
+*.tfvars
+.terraform.lock.hcl
+crash.log
+
+# Ignore nested git repo inside grocery-app
+grocery-app/.git/

@@ -1,0 +1,26 @@
+node_modules/
+.env
+.tfvars
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+terraform.tfvars.json
+*.tfvars
+
+# Terraform lock and crash logs
+.terraform.lock.hcl
+crash.log
+
+# Node
+npm-debug.log
+package-lock.json
+
+# Editor/OS files
+.DS_Store
+.vscode/
+
+# AWS credentials
+.aws/
