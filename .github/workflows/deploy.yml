@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - master
-    paths:
+    paths: 
       - 'grocery-app/**'
       - '.github/workflows/deploy.yml'
   workflow_dispatch:

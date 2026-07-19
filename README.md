@@ -60,18 +60,6 @@ On push to `main` (or manual dispatch) the pipeline will:
 - Build and push `ECR_REPOSITORY` (set in the workflow)
 - Send a SSM command to EC2 instances to pull and restart the container
 
-## Build & push image manually (Optional, Only Run for testing OR Debugging)
-
-```bash
-# build
-docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./grocery-app
-# login
-aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
-# push
-docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-```
-
-
 ## Terraform (provisioning on AWS)
 
 The `terraform/` configuration will create an ECR repository, an EC2 instance, IAM role/profile, and a security group. Required variables are defined in `terraform/variables.tf`.
@@ -85,6 +73,28 @@ terraform plan -out plan.tfplan
 # provide credentials via terraform.tfvars or export env vars
 terraform apply "plan.tfplan"
 terraform destroy # To end the running server and all the resources
+```
+## Build & push image manually (Optional, Only Run for testing OR Debugging)
+
+```bash
+# Login to AWS ECR:
+
+1) first get the password, copy it:
+aws ecr get-login-password --region <region>
+
+2) then run this command: 
+docker login <account_ID>.dkr.ecr.<region>.amazonaws.com
+
+On prompt, enter the username 'AWS' and paste the password
+
+# build
+docker build -t grocery-app .
+
+# tag the image:
+docker tag grocery-app:latest <account_ID>.dkr.ecr.<region>.amazonaws.com/grocery-app:latest
+
+# push
+docker push <account_ID>.dkr.ecr.<region>.amazonaws.com/grocery-app:latest
 ```
 
 Notes:
