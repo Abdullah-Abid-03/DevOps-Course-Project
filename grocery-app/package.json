@@ -1,11 +1,11 @@
 {
   "name": "freshcart-grocery-app",
   "version": "1.0.0",
-  "description": "FreshCart — A premium grocery selling application",
+  "description": "FreshCart \u2014 A premium grocery selling application",
   "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "node --watch server/index.js"
+    "start": "node init && node server/index.js",
+    "dev": "node init && node --watch server/index.js"
   },
   "keywords": [
     "grocery",

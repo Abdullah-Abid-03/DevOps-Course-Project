@@ -3,7 +3,6 @@ node_modules/
 
 # Ignore Editor and OS files
 .DS_Store
-.vscode/
 
 # Ignore AWS credentials
 .aws/
@@ -23,3 +22,4 @@ crash.log
 
 # Ignore nested git repo inside grocery-app
 grocery-app/.git/
+config.bat
