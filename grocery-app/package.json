@@ -4,8 +4,8 @@
   "description": "FreshCart \u2014 A premium grocery selling application",
   "main": "server/index.js",
   "scripts": {
-    "start": "node init && node server/index.js",
-    "dev": "node init && node --watch server/index.js"
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
   },
   "keywords": [
     "grocery",
